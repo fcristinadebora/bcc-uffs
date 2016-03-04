@@ -11,7 +11,7 @@ module led_control(
 
 endmodule
 
-module test;
+module led;
 
 	led_control ld(
 		i_gnd,
@@ -27,14 +27,14 @@ module test;
 		o_clock
 	;
 
-    always #2 i_clock = ~i_clock;
+    always #1 i_clock = ~i_clock;
 
   
   initial begin
     $dumpvars(0, ld);
     #10;
     i_gnd <= 1'b0;
-    i_clock <=  1'b1;
+    i_clock <=  1'b0;
     #500;
     $finish;
   end
