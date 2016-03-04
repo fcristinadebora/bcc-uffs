@@ -31,7 +31,7 @@ module test;
 
   
   initial begin
-    $dumpvars(0, V);
+    $dumpvars(0, ld);
     #10;
     i_gnd <= 1'b0;
     i_clock <=  1'b1;
