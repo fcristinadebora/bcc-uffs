@@ -2,40 +2,36 @@
 #include <stdio.h>
 
 #define MAX_LINHAS 10;
-#define MAX_COLUNAS 2;
+#define MAX_COLUNAS 10;
 
 
 int main(){
-	int nColunas, nLinhas, i, j;
+	int i, j, nLinhas, nColunas, **pMatriz;
+  
+	nLinhas = rand() % MAX_LINHAS;
 
-	//Obtém randomicamente o número de linhas
-	//nLinhas = rand() % MAX_LINHAS;
-	nLinhas = 3;
+	/* aloca as linhas da matriz */
+	pMatriz =  malloc(nLinhas * sizeof(int));
+	if (pMatriz == NULL) {
+		printf ("** Erro: Memoria Insuficiente **");
+	}
+	
+	/* aloca as colunas da matriz */
+	for (i=0;i<nLinhas;i++) {
+		nColunas = rand() % MAX_COLUNAS;
+		pMatriz[i] =  malloc(nColunas * sizeof(int));
+		if (pMatriz[i] == NULL) {
+			printf ("** Erro: Memoria Insuficiente **");
+		}
 
-	int *p[3];
-
-	*p[0] = 1;
-	*p[1] = 2;
-	*p[2] = 3;
-
-	int **pLinhas = (int**) malloc(nLinhas * sizeof(int));
-
-	pLinhas[0] = p;
-	pLinhas[1] = p;
-	pLinhas[2] = p;
-
-	for(i=0;i<nLinhas;i++){
-		printf("%p: %d\n", pLinhas[i], *pLinhas[i]);
+		printf("%p: ", pMatriz[i]);
+		for(j=0;j<nColunas;j++){
+			pMatriz[i][j] = rand() % 10;
+			printf("%d ", pMatriz[i][j]);
+		}
+		printf("\n");
 	}
 
-	/*
-	for(i=0;i<nLinhas;i++){
-		//Obtém randomicamente o número de colunas
-		nColunas = rand() % MAX_LINHAS;
-		
-		printf("%p\n", pLinhas);
-	}
-	*/
-
+	
 	return 0;
 }
