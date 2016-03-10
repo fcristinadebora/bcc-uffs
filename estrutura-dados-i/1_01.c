@@ -4,19 +4,21 @@
 #include <string.h>
 
 int main(){
-	int *p, *pAux, num, controle, aux=0,i;
+	int *p, *pAux, *pAux2, num, controle, aux=0;
 
 	p = (int*)malloc(5*sizeof(int));
+	pAux = p;
 	if(p == NULL){
 		printf("Erro: memória insuficiente");
 		return 0;
 	}
 
 	controle = 5; //Tem 5 alocações para ocupar
-	while(scanf("%d", (int*)(p+aux))){
+	while(scanf("%d", &p[aux])){
 		if(!controle){
-			pAux = p;
-			if(realloc(pAux,5*sizeof(int)) == NULL){
+			pAux = p+aux;
+			printf("Realocou\n");
+			if((int*)realloc(pAux,5*sizeof(int)) == NULL){
 				printf("Erro: memória insuficiente");
 				break;
 			}
@@ -24,6 +26,7 @@ int main(){
 			
 		}
 	controle--;
+	aux++;
 	}
 
 	return 0;
