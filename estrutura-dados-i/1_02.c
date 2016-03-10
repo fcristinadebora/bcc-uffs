@@ -24,6 +24,10 @@ int main(){
 	}
 
 	p = uniao(v1, n1, v2, n2);
+	if(p == NULL){
+		return 0;
+	}
+	
 
 	for(i=0;i<(n1+n2);i++){
 		printf("%d ", p[i]);
@@ -38,6 +42,10 @@ int main(){
 int* uniao(int *v1, int n1, int *v2, int n2){
 	int i;
 	int *p = (int*)malloc((n1+n2)*sizeof(int));
+	if(p == NULL){
+		printf("Erro: memória insuficiente");
+		return NULL;
+	}
 
 	for(i=0;i<n1;i++){
 		p[i] = v1[i];

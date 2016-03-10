@@ -13,7 +13,8 @@ int main(){
 	/* aloca as linhas da matriz */
 	pMatriz =  malloc(nLinhas * sizeof(int));
 	if (pMatriz == NULL) {
-		printf ("** Erro: Memoria Insuficiente **");
+		printf ("Erro: Memoria Insuficiente");
+		return 0;
 	}
 	
 	/* aloca as colunas da matriz */
@@ -21,7 +22,8 @@ int main(){
 		nColunas = rand() % MAX_COLUNAS;
 		pMatriz[i] =  malloc(nColunas * sizeof(int));
 		if (pMatriz[i] == NULL) {
-			printf ("** Erro: Memoria Insuficiente **");
+			printf ("Erro: Memoria Insuficiente");
+			return 0;
 		}
 
 		printf("%p: ", pMatriz[i]);
