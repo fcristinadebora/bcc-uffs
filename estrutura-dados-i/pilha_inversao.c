@@ -6,54 +6,74 @@ typedef struct item{
 	void *prox;
 }item;
 
-void *push();
-//item *pop(char it);
-int verificaAlocacao(item *p);
+//Protótipo das funções
+item* push(); //Adiciona mais um item na pilha
+int pop(item *pHead); //Remove ultimo item da pilha
+void verificaAlocacao(item *p);
 
 int main(){
-	item *pHead = NULL, *pAuxiliar = NULL;
-	int count=0,i;
-
+	item *pHead, *p;
+	
+	//Inicia a lista
 	pHead = push();
-	scanf("%c", &pHead->conteudo);
-	getchar();
-	pHead->prox = NULL;
+	
+	//Ponteiro auxiliar
+	p = pHead;
+	scanf("%c",&p->conteudo);
 
-	pAuxiliar = pHead;
-	do{
-		if(pAuxiliar->conteudo == '.'){
-			pAuxiliar->prox = NULL;
-			break;
-		}else{
-			scanf("%c", &pAuxiliar->conteudo);
-			getchar();
-			printf("%c foi alocado em %p\n", pAuxiliar->conteudo, pAuxiliar->prox);
-			pAuxiliar->prox = push();
-		}
-	count++;			
-	}while(1);
+	while(p->conteudo != '\n'){
+		p->prox = push();
+		p = p->prox;
+		scanf("%c",&p->conteudo);
+	}
 
-	printf("%c\n", pHead->conteudo);
+	while(pop(pHead));
 
-	//while(scanf())
+	printf("\n");
 
 	return 0;
 }
 
-int verificaAlocacao(item *p){
-	//Se o ponteiro é igual NULL, retorna False (0)
-	if(p == NULL){
-		printf("Erro: falha na alocação.\n");
-		exit(0);
-	} 		
+item * push(){
+	//Aloca mais um espaço dinâmico de mem.
+	item *p = (item*) malloc(sizeof(item));
 
-	return 1; //Else, retorna  True (1)
-}
-
-//Aloca uma posição de memória e retorna o ponteiro para ela
-void *push(){
-	void *p = malloc(sizeof(item));
+	//Verifica se a alocação foi bem sucedida
 	verificaAlocacao(p);
 
+	//Retorna endereço da alocação
 	return p;
+}
+
+int pop(item *pHead){
+	//Return 0 = Lista vazia
+	//Return 1 = ainda há elementos
+
+	item *p, *pAnt;
+
+	if(pHead->prox==NULL){ //Se a cabeça não aponta pra nada
+		printf("%c", pHead->conteudo);
+		return 0;
+	}
+
+	p = pHead;
+	while(p->prox != NULL){
+		pAnt = p;
+		p = pAnt->prox;
+	}
+
+	pAnt->prox = NULL;
+	if(p->conteudo != '\n'){
+		printf("%c", p->conteudo);
+	}
+	free(p);
+	
+	return 1;
+}
+
+void verificaAlocacao(item *p){
+	if(p == NULL){
+		printf("Falha na alocação\n");
+		exit(0);
+	}
 }
