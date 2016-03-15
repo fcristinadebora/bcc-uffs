@@ -15,7 +15,6 @@ int main(){
 	while(scanf("%d", &p[aux])){
 		if(!controle){
 			p = realloc(p,(aux + 6)*sizeof(int));			
-			printf("Realocou, %p\n", p);
 			if(p == NULL){
 				printf("Erro: memória insuficiente");
 				break;
