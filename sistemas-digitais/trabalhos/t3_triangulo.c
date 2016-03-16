@@ -8,7 +8,7 @@ typedef struct ponto{
 unsigned int determinante(ponto triA, ponto triB, ponto triC);
 
 int main(){
-	unsigned matriz[800][600],i, detABC, detABP, detAPC, detPBC;
+	unsigned i, detABC, detABP, detAPC, detPBC;
 	ponto tri[3], p;
 
 	for(i=0;i<3;i++){
