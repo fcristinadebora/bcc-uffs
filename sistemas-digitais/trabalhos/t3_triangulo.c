@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define M_X 70
+#define M_Y 50
+
 typedef struct ponto{
 	int x,y;
 }ponto;
@@ -8,12 +11,11 @@ typedef struct ponto{
 int determinante(ponto triA, ponto triB, ponto triC);
 
 int main(){
-	int i, detABC, detABP, detAPC, detPBC;
-	ponto tri[3], p;
+	int y, x, detABC, detABP, detAPC, detPBC;
+	ponto tri[3], p, k;
 
-	for(i=0;i<3;i++){
-		printf("Digite as coordenadas xy do ponto %d\n", i);
-		scanf("%d %d", &tri[i].x, &tri[i].y);
+	for(y=0;y<3;y++){
+		scanf("%d %d", &tri[y].x, &tri[y].y);
 	}
 
 	detABC = determinante(tri[0], tri[1], tri[2]);
@@ -21,20 +23,27 @@ int main(){
 		return 0;
 	}
 
-	printf("Digite as coordenadas xy do ponto P\n");
-	scanf("%d %d", &p.x, &p.y);
-
 	detABC = determinante(tri[0], tri[1], tri[2]);
-	detABP = determinante(tri[0], tri[1], p);
-	detAPC = determinante(tri[0], p, tri[2]);
-	detPBC = determinante(p, tri[1], tri[2]);
 
-	if(detABC != (detABP + detAPC + detPBC)){
-		printf("Ponto não pertence ao triângulo\n");
-	}else{
-		printf("Ponto pertence ao triângulo\n");
+	for(y=M_Y;y>0;y--){
+		for(x=0;x<M_X;x++){
+			p.x = x;
+			p.y = y;
+	
+			detABP = determinante(tri[0], tri[1], p);
+			detAPC = determinante(tri[0], p, tri[2]);
+			detPBC = determinante(p, tri[1], tri[2]);
+	
+			if(detABC != (detABP + detAPC + detPBC)){
+				printf("-");
+			}else{
+				printf(" ");
+			}
+	
+		}
+		printf("\n");
 	}
-
+	
 	return 0;
 }
 
