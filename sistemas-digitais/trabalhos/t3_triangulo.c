@@ -5,10 +5,10 @@ typedef struct ponto{
 	int x,y;
 }ponto;
 
-unsigned int determinante(ponto triA, ponto triB, ponto triC);
+int determinante(ponto triA, ponto triB, ponto triC);
 
 int main(){
-	unsigned i, detABC, detABP, detAPC, detPBC;
+	int i, detABC, detABP, detAPC, detPBC;
 	ponto tri[3], p;
 
 	for(i=0;i<3;i++){
@@ -39,7 +39,7 @@ int main(){
 }
 
 //Calcula a determinante das coordenadas
-unsigned int determinante(ponto triA, ponto triB, ponto triC){
+int determinante(ponto triA, ponto triB, ponto triC){
 	int diagonalPrincipal, diagonalOposta;
 
 	diagonalPrincipal = (triA.x*triB.y)+(triA.y*triC.x)+(triB.x*triC.y);
