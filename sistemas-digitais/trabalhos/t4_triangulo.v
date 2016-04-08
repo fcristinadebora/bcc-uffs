@@ -1,96 +1,146 @@
-module main(
-	input [9:0]ax,
+module triangle(
+	input clk,
+	input set,
+	input reset,
+	input [10:0]ax,
 	input [9:0]ay,
-	input [9:0]bx,
+	input [10:0]bx,
 	input [9:0]by,
-	input [9:0]cx,
-	input [9:0]cy
+	input [10:0]cx,
+	input [9:0]cy,
+	input [10:0]px,
+	input [9:0]py,
+
+	output insideTriangle,
+	output read,
+	output write
 	);
+	
+	//Control regs
+	reg read_r=1;
+	reg write_r=0;
 
-	reg [9:0]px;
-	reg [9:0]py;
-	reg [18:0]detABC;
-	reg [18:0]detABP;
-	reg [18:0]detAPC;
-	reg [18:0]detPBC;
-	reg [9:0]y;
-	reg [9:0]x;
-	reg [9:0]MAX_LINHAS=9'd50;
-	reg [9:0]MAX_COLUNAS=9'd75;
-	reg [18:0]dPrincipal;
-	reg [18:0]dSecundaria;
-	 
-	wire [9:0]ax;
-	wire [9:0]ay;
-	wire [9:0]bx;
-	wire [9:0]by;
-	wire [9:0]cx;
-	wire [9:0]cy;
+	reg signed [18:0]detABC;
+	reg signed [18:0]detABP;
+	reg signed [18:0]detAPC;
+	reg signed [18:0]detPBC;
+	reg [18:0]mult1;
+	reg [18:0]mult2;
+	reg [4:0]state = 4'd0;
+	reg insideTriangle_;
 
-	assign ax = 9'd0;
-	assign ay = 9'd0;
-	assign bx = 9'd10;
-	assign by = 9'd0;
-	assign cx = 9'd0;
-	assign cy = 9'd30;
-   
-	initial begin
-		
-		//detABC
-		assign dPrincipal = ((ax*by)+(ay*cx)+(bx*cy));
-		assign dSecundaria = ((by*cx)+(ax*cy)+(ay*bx));
-		
-		if (dPrincipal > dSecundaria)
-			detABC = dPrincipal - dSecundaria;
-		else
-			detABC = dSecundaria - dPrincipal;
-		//Fim detABC
-		
-		for (y=MAX_LINHAS+1;y>0;y=y-1) begin
-			py = y-1;
-			for (x=0;x<MAX_COLUNAS+1;x=x+1) begin
-				px = x;
-					
-				//detABP
-				assign dPrincipal = ((ax*by)+(ay*px)+(bx*py));
-				assign dSecundaria = ((by*px)+(ax*py)+(ay*bx));
-		
-				if (dPrincipal > dSecundaria)
-				detABP = dPrincipal - dSecundaria;
-				else
-				detABP = dSecundaria - dPrincipal;
-				//Fim detABP
+	assign insideTriangle = insideTriangle_;
+	assign read = read_r;
+	assign write = write_r;
 
-				//detAPC
-				assign dPrincipal = ((ax*py)+(ay*cx)+(px*by));
-				assign dSecundaria = ((py*cx)+(ax*cy)+(ay*px));        
-		
-				if (dPrincipal > dSecundaria)
-				detAPC = dPrincipal - dSecundaria;
-				else
-				detAPC = dSecundaria - dPrincipal;
-				//Fim detAPC
+	always @(clk) begin
 
-				//detPBC
-				assign dPrincipal = ((px*by)+(py*cx)+(bx*cy));
-				assign dSecundaria = ((by*cx)+(px*cy)+(py*bx));        
-		
-				if (dPrincipal > dSecundaria)
-					detPBC = dPrincipal - dSecundaria;
-				else
-					detPBC = dSecundaria - dPrincipal;
-				//Fim detPBC
+		if (set) begin
+			insideTriangle_ <= 1;
+		end //if(set)		
 
-				if(detABC < (detABP+detAPC+detPBC))
-					$write("-");
-				else
-					$write(" ");
-		end
+		else if (reset) begin
+			insideTriangle_ <= 0;
+		end //if(rset)		
 
-		$display("");
-		end
+		else begin
+			case(state)
+				0:begin //Estado de leitura
+				read_r <= 1;
+				write_r <= 0;					
+				state <= 1;
+				end //0
+				1:begin
+					mult1 <= (ax*by);
+					mult2 <= (ay*bx);
 
+				read_r <= 0;
+				state <= 2;
+				end //1
+				2:begin
+					mult1 <= (px*cy);
+					mult2 <= (py*cx);
 
-      $finish ;
-    end
+					detABC <= mult1 - mult2;
+					detABP <= mult1 - mult2;
+
+				state <= 3;
+				end //2
+				3:begin
+					mult1 <= (ay*cx);
+					mult2 <= (bx*py);
+
+					detAPC <= mult1 - mult2;
+					detPBC <= mult2 - mult1;
+
+				state <= 4;
+				end //3
+				4:begin
+					mult1 <= (bx*cy);
+					mult2 <= (ay*px);
+
+					detABC <= detABC + mult1;
+					detAPC <= detAPC + mult1;
+					detABP <= detABP + mult2;
+					detPBC <= detPBC - mult2;
+
+				state <= 5;
+				end //4
+				5:begin
+					mult1 <= (ax*cy);
+					mult2 <= (by*px);
+
+					detABC <= detABC + mult1;
+					detPBC <= detPBC + mult1;
+					detABP <= detABP + mult2;
+					detAPC <= detAPC - mult2;
+
+				state <= 6;
+				end //5
+				6:begin
+					mult1 <= (by*cx);
+					mult2 <= (ax*py);
+
+					detABC <= detABC - mult1;
+					detAPC <= detAPC - mult1;
+					detABP <= detABP - mult2;
+					detPBC <= detPBC + mult2;
+
+				state <= 7;
+				end //6
+				7:begin
+					detABC <= detABC - mult1;
+					detPBC <= detPBC - mult1;
+					detABP <= detABP - mult2;
+					detAPC <= detAPC + mult2;
+
+				state <= 8;
+				end //7
+				8:begin
+					//Usa somadores para inverter sinais negativos
+					if(detABC < 0)
+						detABC <= ~detABC + 1;
+					if(detABP < 0)
+						detABP <= ~detABP + 1;
+					if(detAPC < 0)
+						detAPC <= ~detAPC + 1;
+					if(detPBC < 0)
+						detPBC <= ~detPBC + 1;
+
+				state <= 9;
+				end //8
+				9:begin //Estado de escrita
+
+						if(!detABC)
+							insideTriangle_ <= 1'bx;
+						else
+							insideTriangle_ <= (detABC == detABP + detAPC + detPBC);
+
+				write_r <= 1;
+				state <= 0;
+				end //9
+			endcase //case(state)
+		end //else
+	end //always @(clk)
+
 endmodule
