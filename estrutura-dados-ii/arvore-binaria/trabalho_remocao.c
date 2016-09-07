@@ -60,10 +60,6 @@ void finalizaArvore(raiz **arvore){
   *arvore = NULL;
 }
 
-raiz * removeNode(raiz * node, int lado){
-  
-}
-
 raiz * removeR(raiz * pai, raiz * arvore, int num){
   if(!arvore) return NULL;
 
@@ -96,7 +92,8 @@ raiz * removeR(raiz * pai, raiz * arvore, int num){
       aux->dir = arvore->dir;
       aux->esq = arvore->esq;
     }
-
+    
+    free(arvore);
     return aux;
   }
 }
